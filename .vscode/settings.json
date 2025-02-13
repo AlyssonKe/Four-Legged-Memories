@@ -1,0 +1,12 @@
+{
+	"editor.defaultFormatter": "JohnnyMorganz.stylua",
+	"editor.formatOnSave": true,
+	"editor.insertSpaces": false,
+	"editor.tabSize": 4,
+	"robloxLsp.diagnostics.disable": [
+		// "unused-local",
+		"trailing-space",
+		// "deprecated"
+	],
+	"stylua.targetReleaseVersion": "latest"
+  }

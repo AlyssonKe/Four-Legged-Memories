@@ -1,0 +1,21 @@
+[package]
+name = "duelanbr/ata"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+private = true
+
+[dependencies]
+Input = "sleitnick/input@2.1.1"
+Promise = "evaera/promise@4.0.0"
+Shake = "sleitnick/shake@0.1.7"
+Signal = "sleitnick/signal@1.5.0"
+Trove = "sleitnick/trove@0.5.0"
+TableUtil = "sleitnick/table-util@1.2.0"
+Shake = "sleitnick/shake@0.1.7"
+Searcher = "xswezan/searcher@0.1.0"
+ByteNet = "ffrostflame/bytenet@0.4.3"
+GameAnalytics = "gameanalytics/gameanalytics-sdk@2.2.4"
+Replion = "ytrev/replion@2.0.0-rc.4"
+Flashcast = "synpixel/flashcast@3.0.3"
+TopBarPlus = "stoozey/topbarplus-wally@3.0.5"

@@ -1,0 +1,13 @@
+return {
+	SPEED = 400,
+	GRAVITY = Vector3.new(0, 0, 0),
+	MAX_DISTANCE = 1000,
+
+	RECOIL_STOP_SPEED = 10,
+	RECOIL_ZOOM_RETURN_SPEED = 20,
+	RECOIL_DEFAULT_FOV = 70,
+	RECOIL_MAX = Vector2.new(2.5, 4),
+	RECOIL_MIN = Vector2.new(-2.5, 2),
+
+	AIM_ICON = "rbxassetid://2779866917",
+}

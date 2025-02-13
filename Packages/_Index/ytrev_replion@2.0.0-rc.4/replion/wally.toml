@@ -1,0 +1,17 @@
+[package]
+name = "ytrev/replion"
+description = "A lightweight State Replicator."
+version = "2.0.0-rc.4"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+authors = ["yTrev"]
+exclude = ["**"]
+include = ["src", "src/**", "wally.toml", "default.project.json"]
+
+[dependencies]
+Signal = "sleitnick/signal@2.0.1"
+Freeze = "duckarmor/freeze@0.1.4"
+
+[dev-dependencies]
+Jest = "jsdotlua/jest@3.6.1-rc.2"
+JestGlobals = "jsdotlua/jest-globals@3.6.1-rc.2"

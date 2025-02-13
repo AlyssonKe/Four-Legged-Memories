@@ -1,0 +1,3 @@
+return {
+	AMOUNT_OF_SCRAPS_TO_CRAFT_GUN = 10
+}
