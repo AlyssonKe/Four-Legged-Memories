@@ -1,4 +1,5 @@
 --// Services
+local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -149,6 +150,10 @@ function Camera:impulseSpring(vector: Vector3)
 	self.bobSpring.y:SetGoal(-vector.Y / 1)
 end
 
+local cameraManipulationParams = OverlapParams.new()
+cameraManipulationParams.FilterDescendantsInstances = CollectionService:GetTagged("CameraManipulation")
+cameraManipulationParams.FilterType = Enum.RaycastFilterType.Include
+
 function Camera:default()
 	-- Create springs
 	if not self.spring then
@@ -204,7 +209,48 @@ function Camera:default()
 	params.FilterType = Enum.RaycastFilterType.Exclude
 
 	RunService:BindToRenderStep("FirstPersonCamera", Enum.RenderPriority.Camera.Value + 1, function(deltaTime)
-		if not self.humanoidRootPart or not self.humanoidRootPart.Parent then -- if there isn't HumanoidRootPart will return
+		local humanoidRootPart: BasePart = self.humanoidRootPart
+		if not humanoidRootPart or not humanoidRootPart.Parent then -- if there isn't HumanoidRootPart will return
+			return
+		end
+
+		self:updateLockMouse()
+
+		camera.CameraType = Enum.CameraType.Scriptable
+
+		local isInCameraManipulationPart = workspace:GetPartsInPart(humanoidRootPart, cameraManipulationParams)
+		local manipulationPart = isInCameraManipulationPart and isInCameraManipulationPart[1]
+		if manipulationPart then
+			local size = manipulationPart.Size
+			local width = size.Z
+
+			local partPos = manipulationPart:GetPivot()
+			local yPos = partPos.Y
+
+			local localPos = partPos:PointToObjectSpace(humanoidRootPart.Position)
+
+			local halfSize = size / 2
+
+			local limitedX = math.clamp(localPos.X, -halfSize.X + (width / 2), halfSize.X - (width / 2))
+			local limitedZ = math.clamp(localPos.Z, -halfSize.Z + 1, halfSize.Z - 1)
+
+			local clampedLocalPos = Vector3.new(limitedX, yPos, limitedZ)
+
+			local clampedWorldPos = partPos:PointToWorldSpace(clampedLocalPos)
+
+			local clampedCFrame = CFrame.new(clampedWorldPos) * CFrame.Angles(0, math.rad(yPos), 0)
+
+			local finalCF = CFrame.new(clampedCFrame.Position, humanoidRootPart.Position)
+
+			local X, Y, Z = finalCF:ToOrientation()
+			X = (X >= 40 and 40) or (X <= -80 and -80) or X
+
+			print(X)
+
+			finalCF = CFrame.new(finalCF.Position) * CFrame.new(math.rad(X), math.rad(Y), math.rad(Z))
+
+			camera.CFrame = finalCF
+
 			return
 		end
 
@@ -212,9 +258,6 @@ function Camera:default()
 		self.moveSpring.y:SetGoal(self.humanoidRootPart.Position.Y)
 		self.moveSpring.z:SetGoal(self.humanoidRootPart.Position.Z)
 
-		self:updateLockMouse()
-
-		camera.CameraType = Enum.CameraType.Scriptable
 		-- self.bobSpring.Speed = Utils.percentageBetweenRange(
 		-- 	100, --(PlayerConfig.configData.SmoothCamera and PlayerConfig.configData.SmoothCamera.value) or 100,
 		-- 	30,
@@ -246,7 +289,7 @@ function Camera:default()
 		local _x1, y1, _z1 = camera.CFrame:ToOrientation()
 		local _x2, y2, _z2 = self.humanoidRootPart.CFrame:ToOrientation()
 
-		self.humanoidRootPart.CFrame *= CFrame.Angles(0, y1 - y2, 0)
+		-- self.humanoidRootPart.CFrame *= CFrame.Angles(0, y1 - y2, 0)
 
 		self.camPos += (self.targetCamPos - self.camPos) * 0.28
 		self.angleX = self.angleX + (self.targetAngleX - self.angleX) * 0.35
@@ -274,8 +317,7 @@ function Camera:default()
 			* CFrame.Angles(0, math.rad(self.angleY), 0)
 			* CFrame.Angles(math.rad(self.angleX), 0, 0)
 			-- * CFrame.Angles(math.rad(-20), 0, 0)
-			* CFrame.new(0, 2, 10) -- Offset
-			* CFrame.Angles(0, math.rad(90), 0) -- Offset
+			* CFrame.new(2, 2, 8) -- Offset
 			* CFrame.Angles(
 				math.rad(math.clamp(self.bobSpring.y.Offset + 0 + self.recoilSpring.y.Offset, -88, 88)),
 				0,
