@@ -25,6 +25,7 @@ loadModules(script:WaitForChild("Controllers"))
 
 for _, controller in loadedModules do
 	if typeof(controller) == "table" and controller.start then
+		print(_, loadedModules)
 		--task.spawn(function()
 		controller:start()
 		--end)

@@ -18,6 +18,8 @@ function PlayerController:start()
 		Utils.waitForCharacterLoad(character)
 		Character.onCharacterAdded(character)
 	end)
+
+	print("OI")
 end
 
 return PlayerController

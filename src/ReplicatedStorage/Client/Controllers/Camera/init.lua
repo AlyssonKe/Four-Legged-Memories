@@ -66,6 +66,8 @@ function Camera.new(cameraType: string)
 		targetAngleX = 0,
 		targetAngleY = 0,
 
+		lastCharacterX = 0,
+
 		lockMouse = true,
 	}, Camera)
 
@@ -155,6 +157,8 @@ cameraManipulationParams.FilterDescendantsInstances = CollectionService:GetTagge
 cameraManipulationParams.FilterType = Enum.RaycastFilterType.Include
 
 function Camera:default()
+	camera.FieldOfView = 55
+
 	-- Create springs
 	if not self.spring then
 		self.spring = Vector3.zero --Spring.new(Vector3.zero)
@@ -164,23 +168,23 @@ function Camera:default()
 
 	if not self.bobSpring then
 		self.bobSpring = {
-			x = Spring.new(5, 4, 35, 0, 0.25, 0),
-			y = Spring.new(5, 4, 35, 0, 0.25, 0),
+			x = Spring.new(5, 6, 35, 0, 0.25, 0),
+			y = Spring.new(5, 6, 35, 0, 0.25, 0),
 		}
 	end
 
 	if not self.recoilSpring then
 		self.recoilSpring = {
-			x = Spring.new(6, 4.5, 50, 0, 0.25, 0),
-			y = Spring.new(6, 4.5, 50, 0, 0.25, 0),
+			x = Spring.new(6, 7, 50, 0, 0.25, 0),
+			y = Spring.new(6, 7, 50, 0, 0.25, 0),
 		}
 	end
 
 	if not self.moveSpring then
 		self.moveSpring = {
-			x = Spring.new(7, 10, 200, 0, 2, self.humanoidRootPart.Position.X),
-			y = Spring.new(7, 10, 200, 0, 2, self.humanoidRootPart.Position.Y),
-			z = Spring.new(7, 10, 200, 0, 2, self.humanoidRootPart.Position.Z),
+			x = Spring.new(7, 12, 200, 0, 2, self.humanoidRootPart.Position.X),
+			y = Spring.new(7, 12, 200, 0, 2, self.humanoidRootPart.Position.Y),
+			z = Spring.new(7, 12, 200, 0, 2, self.humanoidRootPart.Position.Z),
 		}
 	end
 
@@ -217,42 +221,6 @@ function Camera:default()
 		self:updateLockMouse()
 
 		camera.CameraType = Enum.CameraType.Scriptable
-
-		local isInCameraManipulationPart = workspace:GetPartsInPart(humanoidRootPart, cameraManipulationParams)
-		local manipulationPart = isInCameraManipulationPart and isInCameraManipulationPart[1]
-		if manipulationPart then
-			local size = manipulationPart.Size
-			local width = size.Z
-
-			local partPos = manipulationPart:GetPivot()
-			local yPos = partPos.Y
-
-			local localPos = partPos:PointToObjectSpace(humanoidRootPart.Position)
-
-			local halfSize = size / 2
-
-			local limitedX = math.clamp(localPos.X, -halfSize.X + (width / 2), halfSize.X - (width / 2))
-			local limitedZ = math.clamp(localPos.Z, -halfSize.Z + 1, halfSize.Z - 1)
-
-			local clampedLocalPos = Vector3.new(limitedX, yPos, limitedZ)
-
-			local clampedWorldPos = partPos:PointToWorldSpace(clampedLocalPos)
-
-			local clampedCFrame = CFrame.new(clampedWorldPos) * CFrame.Angles(0, math.rad(yPos), 0)
-
-			local finalCF = CFrame.new(clampedCFrame.Position, humanoidRootPart.Position)
-
-			local X, Y, Z = finalCF:ToOrientation()
-			X = (X >= 40 and 40) or (X <= -80 and -80) or X
-
-			print(X)
-
-			finalCF = CFrame.new(finalCF.Position) * CFrame.new(math.rad(X), math.rad(Y), math.rad(Z))
-
-			camera.CFrame = finalCF
-
-			return
-		end
 
 		self.moveSpring.x:SetGoal(self.humanoidRootPart.Position.X)
 		self.moveSpring.y:SetGoal(self.humanoidRootPart.Position.Y)
@@ -298,6 +266,8 @@ function Camera:default()
 		dist = math.abs(dist) > 180 and dist - (dist / math.abs(dist)) * 360 or dist
 		self.angleY = (self.angleY + dist * 0.35) % 360
 
+		-- print(self.targetAngleY)
+
 		-- moveOffsetX = self.moveSpring.x.Velocity * deltaTime + 0.5 * self.moveSpring.x.Acceleration * deltaTime ^ 2
 		-- moveOffsetY = self.moveSpring.y.Velocity * deltaTime + 0.5 * self.moveSpring.y.Acceleration * deltaTime ^ 2
 		-- moveOffsetZ = self.moveSpring.z.Velocity * deltaTime + 0.5 * self.moveSpring.z.Acceleration * deltaTime ^ 2
@@ -317,7 +287,7 @@ function Camera:default()
 			* CFrame.Angles(0, math.rad(self.angleY), 0)
 			* CFrame.Angles(math.rad(self.angleX), 0, 0)
 			-- * CFrame.Angles(math.rad(-20), 0, 0)
-			* CFrame.new(2, 2, 8) -- Offset
+			* CFrame.new(1.5, 2, 8) -- Offset
 			* CFrame.Angles(
 				math.rad(math.clamp(self.bobSpring.y.Offset + 0 + self.recoilSpring.y.Offset, -88, 88)),
 				0,

@@ -1,4 +1,5 @@
 return {
+	[Enum.Material.Grass] = { id = "rbxassetid://4776173570", volume = 0.25, playbackSpeed = 1 },
 	[Enum.Material.Fabric] = { id = "rbxassetid://13570031960", volume = 0.25, playbackSpeed = 1 },
 	[Enum.Material.Metal] = { id = "rbxassetid://13568154650", volume = 1.75, playbackSpeed = 1 },
 	[Enum.Material.Plastic] = { id = "rbxassetid://12745963338", volume = 2.5, playbackSpeed = 1 },
